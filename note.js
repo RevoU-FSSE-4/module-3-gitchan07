@@ -1,4 +1,3 @@
-"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -35,16 +34,14 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-// Function untuk mengambil data dari API secara asinkronus
-var express_1 = require("express");
+// Fungsi untuk mengambil data dari API
 function fetchData() {
     return __awaiter(this, void 0, void 0, function () {
         var request, response;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    request = new express_1.Request("https://module3-api-is2m.onrender.com/random-todos");
+                    request = new Request("https://module3-api-is2m.onrender.com/random-todos");
                     return [4 /*yield*/, fetch(request)];
                 case 1:
                     response = _a.sent();
@@ -54,3 +51,89 @@ function fetchData() {
         });
     });
 }
+// Fungsi untuk membuat elemen tugas baru
+function createTaskElement(task) {
+    var taskElement = document.createElement("li");
+    // Text untuk tugas
+    var taskText = document.createElement("span");
+    taskText.textContent = task;
+    // Tombol untuk menandai tugas sebagai selesai
+    var completeButton = document.createElement("button");
+    completeButton.textContent = "Selesai";
+    completeButton.addEventListener("click", function () {
+        taskText.style.textDecoration = "line-through";
+    });
+    // Tombol untuk menghapus tugas
+    var deleteButton = document.createElement("button");
+    deleteButton.textContent = "Hapus";
+    deleteButton.addEventListener("click", function () {
+        taskElement.remove();
+    });
+    var buttonDiv = document.createElement("div");
+    buttonDiv.className = "buttonDiv"; // Menambahkan class
+    buttonDiv.appendChild(completeButton);
+    buttonDiv.appendChild(deleteButton);
+    // Menyisipkan elemen-elemen ke dalam elemen tugas
+    taskElement.appendChild(taskText);
+    taskElement.appendChild(buttonDiv);
+    return taskElement;
+}
+// Fungsi untuk menambahkan tugas baru ke dalam daftar
+function addTask() {
+    return __awaiter(this, void 0, void 0, function () {
+        var newTaskInput, newTaskText, taskListElement, taskElement;
+        return __generator(this, function (_a) {
+            newTaskInput = document.getElementById("newTask");
+            newTaskText = newTaskInput.value.trim();
+            if (newTaskText !== "") {
+                taskListElement = document.getElementById("taskList");
+                if (taskListElement) {
+                    taskElement = createTaskElement(newTaskText);
+                    taskListElement.appendChild(taskElement);
+                    newTaskInput.value = ""; // Mengosongkan input field setelah menambahkan tugas
+                }
+                else {
+                    console.error("Element with id 'taskList' not found!");
+                }
+            }
+            else {
+                alert("Tugas tidak boleh kosong!"); // Menampilkan alert jika input kosong
+            }
+            return [2 /*return*/];
+        });
+    });
+}
+// Fungsi utama untuk mengambil data, membuat tugas, dan menambahkan event listener
+function main() {
+    return __awaiter(this, void 0, void 0, function () {
+        var json, taskListElement, addTaskButton;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, fetchData()];
+                case 1:
+                    json = _a.sent();
+                    taskListElement = document.getElementById("taskList");
+                    if (taskListElement) {
+                        // Looping untuk setiap tugas dan menambahkannya ke dalam daftar
+                        json.forEach(function (task) {
+                            var taskElement = createTaskElement(task);
+                            taskListElement.appendChild(taskElement);
+                        });
+                        addTaskButton = document.getElementById("addTaskBtn");
+                        if (addTaskButton) {
+                            addTaskButton.addEventListener("click", addTask);
+                        }
+                        else {
+                            console.error("Element with id 'addTaskBtn' not found!");
+                        }
+                    }
+                    else {
+                        console.error("Element with id 'taskList' not found!");
+                    }
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
+// Memanggil fungsi main
+main();
